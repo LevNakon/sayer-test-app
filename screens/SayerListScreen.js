@@ -4,6 +4,7 @@ import {
     Text,
     Platform,
     Dimensions,
+    SafeAreaView,
     StyleSheet
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -28,14 +29,16 @@ SayerListScreen.navigationOptions = navData => {
             </View>
         ),
         headerRight: (
-            <HeaderButtons backgroundColor={Colors.secondaryAccent} HeaderButtonComponent={HeaderButton}>
-                <Item
-                    title='Add'
-                    style={styles.icon}
-                    iconName={Platform.OS === 'android' ? 'md-add-circle' : 'ios-add-circle'}
-                    onPress={() => { }}
-                />
-            </HeaderButtons>
+            <SafeAreaView>
+                <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                    <Item
+                        title='Add'
+                        iconName={Platform.OS === 'android' ? 'md-add-circle' : 'ios-add-circle'}
+                        onPress={() => navData.navigation.navigate('SayerCreate')}
+                        show='always'
+                    />
+                </HeaderButtons>
+            </SafeAreaView>
         )
     };
 };
@@ -55,12 +58,7 @@ const styles = StyleSheet.create({
     secondaryText: {
         color: Platform.OS === 'android' ? 'white' : Colors.primary,
         fontSize: Dimensions.get('screen').width > 300 ? 18 : 14
-    },
-    icon: {
-        // backgroundColor: Colors.secondaryAccent,
-        // borderWidth: 0,
-        // borderRadius: 100
-    },
+    }
 });
 
 export default SayerListScreen;

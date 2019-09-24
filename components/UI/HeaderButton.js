@@ -7,12 +7,12 @@ import Colors from '../../constants/Colors';
 
 const CustomHeaderButton = props => {
     return (
-        <HeaderButton
-            {...props}
-            IconComponent={Ionicons}
-            iconSize={Dimensions.get('screen').height > 300 ? 60 : 40}
-            color={Colors.secondary}
-        />
+            <HeaderButton
+                {...props}
+                IconComponent={Ionicons}
+                iconSize={Dimensions.get('screen').height > 300 ? 60 : 40}
+                color={Colors.secondary}
+            />
     );
 };
 
