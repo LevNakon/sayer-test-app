@@ -29,7 +29,7 @@ const SayerListScreen = props => {
                 </View> :
                 <FlatList
                     data={items}
-                    renderItem={(({ item }) => <ListElement id={item.id} name={item.name} />)}
+                    renderItem={(({ item }) => <ListElement id={item.id} name={item.name} navigation={props.navigation} />)}
                     keyExtractor={item => item.id}
                 />
             }

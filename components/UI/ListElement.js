@@ -26,6 +26,13 @@ const ListElement = props => {
         dispatch(itemActions.deleteItem(id));
     }, [dispatch, id]);
 
+    const navigateToDetailsHandler = () => {
+        props.navigation.navigate('SayerDetail', {
+            id,
+            name
+        });
+    };
+
     return (
         <Swipeable
             rightButtons={[
@@ -40,12 +47,17 @@ const ListElement = props => {
             ]}
             rightButtonWidth={100}
         >
-            <View style={styles.container}>
-                <Text
-                    numberOfLines={1} >
-                    {name}
-                </Text>
-            </View>
+            <TouchableComponent
+                style={{ flex: 1 }}
+                onPress={navigateToDetailsHandler}
+            >
+                <View style={styles.container}>
+                    <Text
+                        numberOfLines={1} >
+                        {name}
+                    </Text>
+                </View>
+            </TouchableComponent>
         </Swipeable>
     );
 };
