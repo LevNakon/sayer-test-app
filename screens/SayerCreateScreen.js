@@ -1,40 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     View,
-    Text,
+    AsyncStorage,
+    KeyboardAvoidingView,
     Platform,
-    SafeAreaView,
+    Dimensions,
+    TouchableOpacity,
+    TouchableNativeFeedback,
     TextInput,
     StyleSheet
 } from 'react-native';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { useDispatch } from 'react-redux';
 
-import HeaderButton from '../components/UI/HeaderButton';
+import { AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
+import * as itemActions from '../store/actions/item';
 
 const SayerCreateScreen = props => {
+
+    let TouchableComponent = TouchableOpacity;
+    if (Platform.OS === 'android' && Platform.Version >= 21) {
+        TouchableComponent = TouchableNativeFeedback;
+    }
+
     const [item, setItem] = useState('');
 
+    const dispatch = useDispatch();
+
+    const inputHandler = useCallback(itemText => {
+        setItem(itemText);
+    }, [item]);
+
+    const saveItemHandler = useCallback(() => {
+        const addItem = async () => {
+            await dispatch(itemActions.addItem(item));
+            props.navigation.navigate('SayerList');
+        }
+        addItem();
+    }, [dispatch, item]);
+
     return (
-        <View style={styles.screen}>
-            <View style={}>
-                <TextInput
-                    style={styles.input}
-                    value={item}
-                    onChangeText={setItem}
-                />
-            </View>
-            <View>
-                {/* <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item
-                        title='Add item'
-                        iconName={Platform.OS === 'android' ? 'md-arrow-dropright-circle' : 'ios-arrow-dropright-circle'}
-                        onPress={() => { }}
-                        show='always'
+        <KeyboardAvoidingView
+            behavior='padding'
+            keyboardVerticalOffset={50}
+            style={styles.screen}>
+            <View style={styles.container}>
+                <View style={styles.inputConatiner}>
+                    <TextInput
+                        style={styles.input}
+                        value={item}
+                        onChangeText={inputHandler}
                     />
-                </HeaderButtons> */}
+                </View>
+                <View style={styles.buttonConatiner}>
+                    <TouchableComponent onPress={saveItemHandler} >
+                        <AntDesign
+                            name='rightcircle'
+                            size={Dimensions.get('screen').width > 300 ? 40 : 20}
+                            color={Colors.primaryAccent}
+                        />
+                    </TouchableComponent>
+                </View>
             </View>
-        </View >
+        </KeyboardAvoidingView >
     );
 };
 
@@ -47,9 +75,20 @@ SayerCreateScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
+        padding: 20
+    },
+    container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 20
+        alignItems: 'center',
+        width: '100%'
+    },
+    inputConatiner: {
+        flex: 3
+    },
+    buttonConatiner: {
+        flex: 1,
+        alignItems: 'center'
     },
     input: {
         borderBottomWidth: 1,

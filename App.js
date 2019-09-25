@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux'
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
+import ReduxThunk from 'redux-thunk';
 
 import MainNavigation from './navigation/SayerNavigation';
+
+import itemsReducer from './store/reducers/item';
+
+const rootReducer = combineReducers({
+  items: itemsReducer
+});
+
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -26,6 +36,8 @@ export default function App() {
     );
   }
   return (
-    <MainNavigation />
+    <Provider store={store}>
+      <MainNavigation />
+    </Provider>
   );
 };

@@ -1,6 +1,9 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createAppContainer } from 'react-navigation';
+import { 
+    createSwitchNavigator,
+    createAppContainer
+ } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import Colors from '../constants/Colors';
@@ -8,6 +11,7 @@ import Colors from '../constants/Colors';
 import SayerListScreen from '../screens/SayerListScreen';
 import SayerDetailScreen from '../screens/SayerDetailSceen';
 import SayerCreateScreen from '../screens/SayerCreateScreen';
+import StartupScreen from '../screens/StartupScreen';
 
 const defaultNavOptions = {
     headerStyle: {
@@ -33,4 +37,9 @@ const SayerNavigation = createStackNavigator({
     }
 );
 
-export default createAppContainer(SayerNavigation);
+const MainNavigator = createSwitchNavigator({
+    Startup: StartupScreen,
+    Sayer: SayerNavigation
+});
+
+export default createAppContainer(MainNavigator);
