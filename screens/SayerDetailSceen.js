@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     View,
     Text,
@@ -9,14 +9,16 @@ import {
     TouchableNativeFeedback,
     Platform,
     ScrollView,
+    Keyboard,
     StyleSheet
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import { AntDesign } from '@expo/vector-icons';
 
 import Colors from '../constants/Colors';
-
-import KeyboardSpacer from 'react-native-keyboard-spacer';
+import CommentElement from '../components/UI/CommentElement';
+import * as itemActions from '../store/actions/item';
 
 const SayerDetailScreen = props => {
 
@@ -25,15 +27,31 @@ const SayerDetailScreen = props => {
         TouchableComponent = TouchableNativeFeedback;
     }
 
+    const dispatch = useDispatch();
+
+    const itemId = props.navigation.getParam('id');
+
     const [comment, setComment] = useState('');
 
     const comments = useSelector(store => store.items.items)
-        .find(item => item.id === props.navigation.getParam('id'))
+        .find(item => item.id === itemId)
         .comments;
+
+    const inputHandler = useCallback(commentText => {
+        setComment(commentText);
+    }, [comment]);
+
+    const addCommentHandler = useCallback(() => {
+        const addComment = async () => {
+            await dispatch(itemActions.addComment(comment, itemId));
+            setComment('');
+            Keyboard.dismiss();
+        };
+        addComment();
+    }, [dispatch, comment]);
 
     return (
         <View style={styles.screen}>
-
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {comments.length === 0 ?
                     <View style={styles.center}>
@@ -41,32 +59,39 @@ const SayerDetailScreen = props => {
                             No comments, add some)
                 </Text>
                     </View> :
-                    <FlatList
-                        data={comments}
-                    />
+                    <View style={styles.screen}>
+                        <FlatList
+                            data={comments}
+                            renderItem={({ item, index }) => <CommentElement
+                                name={item.name}
+                                index={index}
+                            />}
+                            keyExtractor={item => item.id}
+                        />
+                    </View>
                 }
-                <View style={styles.commentContainer}>
-                    <View style={styles.container}>
-                        <View style={styles.inputConatiner}>
-                            <TextInput
-                                style={styles.input}
-                                value={comment}
-                                onChangeText={() => { }}
+            </ScrollView>
+            <View style={styles.commentContainer}>
+                <View style={styles.container}>
+                    <View style={styles.inputConatiner}>
+                        <TextInput
+                            style={styles.input}
+                            value={comment}
+                            onChangeText={inputHandler}
+                        />
+                    </View>
+                    <View style={styles.buttonConatiner}>
+                        <TouchableComponent onPress={addCommentHandler} >
+                            <AntDesign
+                                name='rightcircle'
+                                size={Dimensions.get('screen').width > 300 ? 40 : 20}
+                                color={Colors.primaryAccent}
                             />
-                        </View>
-                        <View style={styles.buttonConatiner}>
-                            <TouchableComponent onPress={() => { }} >
-                                <AntDesign
-                                    name='rightcircle'
-                                    size={Dimensions.get('screen').width > 300 ? 40 : 20}
-                                    color={Colors.primaryAccent}
-                                />
-                            </TouchableComponent>
-                        </View>
+                        </TouchableComponent>
                     </View>
                 </View>
-                <KeyboardSpacer />
-            </ScrollView>
+            </View>
+            <KeyboardSpacer />
         </View >
     );
 };
@@ -93,7 +118,6 @@ const styles = StyleSheet.create({
         color: Colors.primaryAccent
     },
     commentContainer: {
-        position: 'absolute',
         bottom: 0,
         width: '100%',
         justifyContent: 'center',
@@ -116,7 +140,6 @@ const styles = StyleSheet.create({
     },
     input: {
         borderWidth: 0,
-        // borderBottomColor: Colors.
         borderRadius: 1,
         backgroundColor: 'white'
     }

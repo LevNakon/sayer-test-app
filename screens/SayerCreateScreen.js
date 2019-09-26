@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import {
     View,
-    AsyncStorage,
     KeyboardAvoidingView,
     Platform,
     Dimensions,

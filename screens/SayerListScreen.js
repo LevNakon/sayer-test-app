@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -29,7 +29,11 @@ const SayerListScreen = props => {
                 </View> :
                 <FlatList
                     data={items}
-                    renderItem={(({ item }) => <ListElement id={item.id} name={item.name} navigation={props.navigation} />)}
+                    renderItem={(({ item }) => <ListElement
+                        id={item.id}
+                        comments={item.comments.length}
+                        name={item.name}
+                        navigation={props.navigation} />)}
                     keyExtractor={item => item.id}
                 />
             }

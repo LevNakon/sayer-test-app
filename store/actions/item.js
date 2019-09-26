@@ -3,6 +3,7 @@ import { AsyncStorage } from 'react-native';
 export const ADD_ITEM = 'ADD_ITEM';
 export const GET_ITEMS = 'GET_ITEMS';
 export const DELETE_ITEM = 'DELETE_ITEM';
+export const ADD_COMMENT = 'ADD_COMMENT';
 
 export const addItem = (item) => {
     return async dispatch => {
@@ -22,14 +23,26 @@ export const addItem = (item) => {
             resultData = [...data, { id: `${item} + ${data.length}`, name: item, comments: [] }]
             await AsyncStorage.setItem('items', JSON.stringify(resultData));
         }
-        console.log('items', resultData)
         dispatch({ type: ADD_ITEM, items: resultData });
+    };
+};
+
+export const addComment = (comment, itemId) => {
+    return async dispatch => {
+        let items = await AsyncStorage.getItem('items');
+        let resultData = JSON.parse(items);
+        let currentItem = resultData.find((item) => item.id === itemId);
+        currentItem.comments.push({
+            id: `${currentItem.id} + ${comment} + ${currentItem.comments.length}`,
+            name: comment
+        });
+        await AsyncStorage.setItem('items', JSON.stringify(resultData));
+        dispatch({ type: ADD_COMMENT, items: resultData });
     };
 };
 
 export const getItems = () => {
     return async dispatch => {
-        // await AsyncStorage.removeItem('items');
         let items = await AsyncStorage.getItem('items');
         let resultData;
         if (items === null) {

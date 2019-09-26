@@ -1,92 +1,55 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
     View,
     Text,
-    TouchableOpacity,
-    TouchableNativeFeedback,
-    Platform,
+    Dimensions,
     StyleSheet
 } from 'react-native';
-import Swipeable from 'react-native-swipeable-row';
-import { useDispatch } from 'react-redux';
 
 import Colors from '../../constants/Colors';
-import * as itemActions from '../../store/actions/item';
 
 const CommentElement = props => {
-    let TouchableComponent = TouchableOpacity;
-    if (Platform.OS === 'android' && Platform.Version >= 21) {
-        TouchableComponent = TouchableNativeFeedback;
-    }
-
-    const dispatch = useDispatch();
-    const { id, name } = props;
-
-    const deleteItemHandler = useCallback(() => {
-        dispatch(itemActions.deleteItem(id));
-    }, [dispatch, id]);
-
-    const navigateToDetailsHandler = () => {
-        props.navigation.navigate('SayerDetail', {
-            id,
-            name
-        });
-    };
+    const { name, index } = props;
 
     return (
-        <Swipeable
-            rightButtons={[
-                <TouchableComponent
-                    style={styles.btnContainer}
-                    onPress={deleteItemHandler}
-                >
-                    <View style={styles.button}>
-                        <Text style={styles.textColor}>Delete</Text>
-                    </View>
-                </TouchableComponent>
-            ]}
-            rightButtonWidth={100}
-        >
-            <TouchableComponent
-                style={{ flex: 1 }}
-                onPress={navigateToDetailsHandler}
-            >
-                <View style={styles.container}>
-                    <Text
-                        numberOfLines={1} >
+        <View style={styles.screen}>
+            <View style={styles.container}>
+                <View style={styles.screen}>
+                    <View
+                        style={{ ...styles.rectangle, backgroundColor: index % 2 !== 0 ? '#ae7d93' : Colors.primaryAccent }}
+                    />
+                </View>
+                <View style={styles.textContainer}>
+                    <Text multiline >
                         {name}
                     </Text>
                 </View>
-            </TouchableComponent>
-        </Swipeable>
+            </View >
+        </View >
     );
 };
 
 const styles = StyleSheet.create({
+    screen: {
+        flex: 1
+    },
     container: {
         flex: 1,
-        height: 50,
-        padding: 40,
-        justifyContent: 'center',
+        paddingHorizontal: 20,
+        paddingVertical: 20,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
         borderBottomWidth: 0.5,
         borderBottomColor: '#e1e1e1'
     },
-    button: {
-        width: 100,
-        height: 50,
-        paddingVertical: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: Colors.secondary
+    rectangle: {
+        width: Dimensions.get('screen').width > 300 ? 70 : 40,
+        height: Dimensions.get('screen').width > 300 ? 70 : 40
     },
-    textColor: {
-        color: 'white',
-        fontFamily: 'open-sans-bold',
-        fontSize: 15
-    },
-    btnContainer: {
-        flex: 1,
-        alignItems: 'flex-start'
+    textContainer: {
+        flex: 3,
+        paddingLeft: 20
     }
 });
 

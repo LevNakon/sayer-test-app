@@ -1,9 +1,9 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { 
+import {
     createSwitchNavigator,
     createAppContainer
- } from 'react-navigation';
+} from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import Colors from '../constants/Colors';

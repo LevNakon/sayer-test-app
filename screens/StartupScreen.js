@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import {
     View,
     ActivityIndicator,
-    StyleSheet,
-    AsyncStorage
+    StyleSheet
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 
